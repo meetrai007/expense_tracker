@@ -22,7 +22,8 @@ while True:
                                     1.add expens
                                     2.totel spend in a special category
                                     3.total spends
-                                    4.exit
+                                    4.view all expense history
+                                    5.exit
                                     Enter what you do:"""))
             break
         except Exception as e:
@@ -34,8 +35,8 @@ while True:
 
         """ther are make two featue to add expense with new category on in paresent category by user choise in choice"""
         choice=int(input("""##### now choose a option #####
-                                    1.add expense in with new category
-                                    2.add expense in paresent category
+                                    1.add expense in new category
+                                    2.add expense in old categorys
                                     Enter your choice 1 or 2 :"""))
         if choice==1:
             continuty="y"
@@ -97,21 +98,28 @@ while True:
             except:
                 print("\n### Choose a valid category to see total expense ###\n")
                 continue
-        print(f"the total spent in {cat_list[enter_category]} is {category_total}")
+        print(f"\nthe total spent in {cat_list[enter_category]} is {category_total}")
         category_total=0
         
 
     if feature==3:
         """feature 3 to chect total spend in all categorys"""
         for key in expense_data:
-            print(key)
-            for items in expense_data[key]:
-                category_total+=items["prise"]
-                
-            
-        print(f"total spend in all category is {category_total}")
+            for item in expense_data[key]:
+                category_total+=item["prise"]
+              
+        print(f"\ntotal spend in all category is {category_total}")
         category_total=0
 
     if feature==4:
+        """this feature to view all expense history"""
+        for key in expense_data:
+            print(f"{key}")
+            for item in expense_data[key]:
+                for k,v in item.items():
+                    print(f"\t{k}:{v}")
+                print(" ")
+               
+    if feature==5:
         """to exit the application""" 
         break 
