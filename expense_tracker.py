@@ -1,7 +1,10 @@
 import json
 import datetime
+import logging
 
-print("############## WELCOME TO EXPENSE TRACKER APPLICATION ##############")
+logging.basicConfig(level=logging.DEBUG)
+
+logging.info("############## WELCOME TO EXPENSE TRACKER APPLICATION ##############")
 
 # Load the expense data from the JSON file
 try:
@@ -22,7 +25,7 @@ while True:
                                 5. Exit
                                 Enter what you want to do: """))
     except ValueError:
-        print("\n### Choose a valid option: 1, 2, 3, 4, or 5 ###\n")
+        logging.info("\n### Choose a valid option: 1, 2, 3, 4, or 5 ###\n")
         continue
 
     if feature == 1:
@@ -38,7 +41,7 @@ while True:
                     description = str(input("Write a short description of the spend: "))
                     price = float(input("Enter the amount you spent: "))
                 except ValueError:
-                    print("\n### Enter details carefully ###\n")
+                    logging.info("\n### Enter details carefully ###\n")
                     continue
                 
                 if category not in expense_data:
@@ -51,10 +54,10 @@ while True:
                 continuty = str(input("Enter 'y' to add more expenses or 'n' to exit (y/n): "))
 
         if choice == 2:
-            print("\n##### Choose a category #####")
+            logging.info("\n##### Choose a category #####")
             cat_list = list(expense_data.keys())
             for idx, key in enumerate(cat_list, 1):
-                print(f"\t{idx}. {key}")
+                logging.info(f"\t{idx}. {key}")
 
             try:
                 enter_category = int(input("Choose a category in which you want to add expense: ")) - 1
@@ -65,34 +68,40 @@ while True:
                 with open("expensedata.json", "w") as file:
                     json.dump(expense_data, file)
             except (IndexError, ValueError):
-                print("\n### Invalid category selection ###\n")
+                logging.error("\n### Invalid category selection ###\n")
 
     if feature == 2:
-        print("\n##### Choose a category #####")
+        logging.info("\n##### Choose a category #####")
         cat_list = list(expense_data.keys())
         for idx, key in enumerate(cat_list, 1):
-            print(f"\t{idx}. {key}")
+            logging.info(f"\t{idx}. {key}")
 
         try:
+            category_total_list=[]
             enter_category = int(input("Choose a category to see total expense: ")) - 1
-            category_total = sum(item["price"] for item in expense_data[cat_list[enter_category]])
-            print(f"\nThe total spent in {cat_list[enter_category]} is {category_total}")
+            for item in expense_data[cat_list[enter_category]]:
+                category_total_list.append(item["price"])
+            logging.info(f"\nThe total spent in {cat_list[enter_category]} is {sum(category_total_list)}")
         except (IndexError, ValueError):
-            print("\n### Invalid category selection ###\n")
+            logging.error("\n### Invalid category selection ###\n")
 
     if feature == 3:
-        category_total = sum(item["price"] for category in expense_data.values() for item in category)
-        print(f"\nTotal spent in all categories is {category_total}")
+        total_exp=[]
+        for categ,valeu in expense_data.items():
+            for i in range (len(valeu)):
+                total_exp.append(valeu[i]["price"])
+        
+        logging.info(f"\nTotal spent in all categories is {sum(total_exp)}")
 
     if feature == 4:
-        print("\n##### Expense History #####")
+        logging.info("\n##### Expense History #####")
         for category, items in expense_data.items():
-            print(f"{category}")
+            logging.info(f"{category}")
             for item in items:
                 for k, v in item.items():
-                    print(f"\t{k}: {v}")
-                print(" ")
+                    logging.info(f"\t{k}: {v}")
+                logging.info(" ")
 
     if feature == 5:
-        print("Exiting the application.")
+        logging.info("Exiting the application.")
         break
