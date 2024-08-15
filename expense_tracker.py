@@ -1,8 +1,9 @@
 import json
 import datetime
 import logging
+import matplotlib.pyplot as plt
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 logging.info("############## WELCOME TO EXPENSE TRACKER APPLICATION ##############")
 
@@ -105,3 +106,22 @@ while True:
     if feature == 5:
         logging.info("Exiting the application.")
         break
+    
+    if feature == 6:
+        logging.info("\n##### Choose a category #####")
+        cat_list = list(expense_data.keys())
+        
+        try:
+            
+            category_total_list=[]
+            category_lablelist=[]
+            for category in cat_list:
+                category_total=0
+                category_lablelist.append(category)
+                for item in expense_data[category]:
+                    category_total+=int(item["price"])
+                category_total_list.append(category_total)
+            plt.pie(category_total_list,labels=category_lablelist,pctdistance=.5)
+            plt.show()
+        except (IndexError, ValueError):
+            logging.error("\n### Invalid category selection ###\n")
