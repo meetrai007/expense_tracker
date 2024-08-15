@@ -121,7 +121,7 @@ while True:
                 for item in expense_data[category]:
                     category_total+=int(item["price"])
                 category_total_list.append(category_total)
-            plt.pie(category_total_list,labels=category_lablelist,pctdistance=.5)
+            plt.pie(category_total_list,labels=category_lablelist,autopct="%1.1f%%")
             plt.show()
         except (IndexError, ValueError):
             logging.error("\n### Invalid category selection ###\n")
