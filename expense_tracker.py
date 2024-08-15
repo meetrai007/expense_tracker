@@ -23,7 +23,8 @@ while True:
                                 2. Total spend in a specific category
                                 3. Total spends
                                 4. View all expense history
-                                5. Exit
+                                5. View pie chart of Total spend in categorys
+                                6. Exit
                                 Enter what you want to do: """))
     except ValueError:
         logging.info("\n### Choose a valid option: 1, 2, 3, 4, or 5 ###\n")
@@ -104,10 +105,6 @@ while True:
                 logging.info(" ")
 
     if feature == 5:
-        logging.info("Exiting the application.")
-        break
-    
-    if feature == 6:
         logging.info("\n##### Choose a category #####")
         cat_list = list(expense_data.keys())
         
@@ -121,7 +118,22 @@ while True:
                 for item in expense_data[category]:
                     category_total+=int(item["price"])
                 category_total_list.append(category_total)
-            plt.pie(category_total_list,labels=category_lablelist,autopct="%1.1f%%")
+
+            def make_autopct(values):
+                def my_autopct(pct):
+                    total = sum(values)
+                    val = int(round(pct*total/100.0))
+                    return 'total:{v:d} ({p:.1f}%)'.format(p=pct,v=val)
+                return my_autopct
+            
+            font1 = {'family':'serif','color':'blue','size':20}
+            plt.pie(category_total_list,labels=category_lablelist,autopct=make_autopct(category_total_list),radius=1.2)
+            plt.title("total expense in different categorys",fontdict=font1)
             plt.show()
         except (IndexError, ValueError):
             logging.error("\n### Invalid category selection ###\n")
+
+    if feature == 6:
+        logging.info("Exiting the application.")
+        break
+    
