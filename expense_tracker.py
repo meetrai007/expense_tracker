@@ -162,6 +162,7 @@ while True:
             font1 = {'family':'serif','color':'blue','size':20}
             plt.pie(category_total_list,labels=category_lablelist,autopct=make_autopct(category_total_list),radius=1.2)
             plt.title("total expense in different categorys",fontdict=font1)
+            plt.legend()
             plt.show()
         except (IndexError, ValueError):
             logging.error("\n### Invalid category selection ###\n")
