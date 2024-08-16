@@ -3,6 +3,7 @@ import datetime
 import logging
 import matplotlib.pyplot as plt
 
+
 logging.basicConfig(level=logging.INFO)
 
 logging.info("############## WELCOME TO EXPENSE TRACKER APPLICATION ##############")
@@ -11,8 +12,15 @@ logging.info("############## WELCOME TO EXPENSE TRACKER APPLICATION ############
 try:
     with open("expensedata.json", "r") as file:
         expense_data = json.load(file)
-except FileNotFoundError:
+except:
     expense_data = {}
+
+try:
+    with open("daily_spend_record.json", "r") as file2:
+        daily_spend_record = json.load(file2)
+except:
+    daily_spend_record = {}
+
 
 current_date = datetime.date.today()
 
@@ -24,7 +32,8 @@ while True:
                                 3. Total spends
                                 4. View all expense history
                                 5. View pie chart of Total spend in categorys
-                                6. Exit
+                                6. View bar chart of daily spend
+                                7. Exit
                                 Enter what you want to do: """))
     except ValueError:
         logging.info("\n### Choose a valid option: 1, 2, 3, 4, or 5 ###\n")
@@ -46,12 +55,23 @@ while True:
                     logging.info("\n### Enter details carefully ###\n")
                     continue
                 
+                """this code for daily total spend and store in a json file"""
+                if str(current_date) in daily_spend_record:
+                    daily_spend_record[str(current_date)]=daily_spend_record[str(current_date)]+price
+                    with open("daily_spend_record.json", "w") as file2:
+                        json.dump(daily_spend_record, file2)
+                if str(current_date) not in daily_spend_record:
+                    daily_spend_record[str(current_date)]=price
+                    with open("daily_spend_record.json", "w") as file2:
+                        json.dump(daily_spend_record, file2)
+
                 if category not in expense_data:
                     expense_data[category] = []
                 expense_data[category].append({"date": str(current_date), "description": description, "price": price})
                 
                 with open("expensedata.json", "w") as file:
                     json.dump(expense_data, file)
+
                 
                 continuty = str(input("Enter 'y' to add more expenses or 'n' to exit (y/n): "))
 
@@ -69,6 +89,17 @@ while True:
                 expense_data[cat_list[enter_category]].append({"date": str(current_date), "description": description, "price": price})
                 with open("expensedata.json", "w") as file:
                     json.dump(expense_data, file)
+                
+                """this code for daily total spend and store in a json file"""
+                if str(current_date) in daily_spend_record:
+                    daily_spend_record[str(current_date)]=daily_spend_record[str(current_date)]+price
+                    with open("daily_spend_record.json", "w") as file2:
+                        json.dump(daily_spend_record, file2)
+                if str(current_date) not in daily_spend_record:
+                    daily_spend_record[str(current_date)]=price
+                    with open("daily_spend_record.json", "w") as file2:
+                        json.dump(daily_spend_record, file2)
+
             except (IndexError, ValueError):
                 logging.error("\n### Invalid category selection ###\n")
 
@@ -84,8 +115,10 @@ while True:
             for item in expense_data[cat_list[enter_category]]:
                 category_total_list.append(item["price"])
             logging.info(f"\nThe total spent in {cat_list[enter_category]} is {sum(category_total_list)}")
+            
         except (IndexError, ValueError):
             logging.error("\n### Invalid category selection ###\n")
+        
 
     if feature == 3:
         total_exp=[]
@@ -134,6 +167,19 @@ while True:
             logging.error("\n### Invalid category selection ###\n")
 
     if feature == 6:
+        dayly_spent=[]
+        dates=[]
+        for k,v in daily_spend_record.items():
+            dayly_spent.append(v)
+            dates.append(k)
+        plt.bar(dates,dayly_spent,width=.2)
+        plt.xlabel("Dates of total spends")
+        plt.ylabel("daily total spend amount")
+        plt.show()
+      
+
+
+    if feature == 7:
         logging.info("Exiting the application.")
         break
     
