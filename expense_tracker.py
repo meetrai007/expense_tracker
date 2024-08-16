@@ -173,6 +173,7 @@ while True:
             dayly_spent.append(v)
             dates.append(k)
         plt.bar(dates,dayly_spent,width=.2)
+        plt.title("Total spend record daily")
         plt.xlabel("Dates of total spends")
         plt.ylabel("daily total spend amount")
         plt.show()
