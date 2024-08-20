@@ -173,11 +173,17 @@ while True:
             logging.error("\n### Invalid category selection ###\n")
 
     if feature == 6:
+        start_date = datetime.datetime.strptime(input("Enter the start date (YYYY-MM-DD): "), "%Y-%m-%d").date()
+        end_date = datetime.datetime.strptime(input("Enter the end date (YYYY-MM-DD): "), "%Y-%m-%d").date()
+
+        
         dayly_spent=[]
         dates=[]
         for k,v in daily_spend_record.items():
-            dayly_spent.append(v)
-            dates.append(k)
+            todaydate=datetime.datetime.strptime(k, "%Y-%m-%d").date()
+            if start_date<=todaydate<=end_date:
+                dayly_spent.append(v)
+                dates.append(k)
         plt.bar(dates,dayly_spent,width=.2)
         plt.title("Total spend record daily")
         plt.xlabel("Dates of total spends")
