@@ -139,22 +139,21 @@ while True:
 
     if feature == 5:
         logging.info("\n##### Choose a category #####")
-        cat_list = list(expense_data.keys())
+        
         
         try:
             start_date = datetime.datetime.strptime(input("Enter the start date (YYYY-MM-DD): "), "%Y-%m-%d").date()
             end_date = datetime.datetime.strptime(input("Enter the end date (YYYY-MM-DD): "), "%Y-%m-%d").date()
-            category_total_list=[]
-            category_lablelist=[]
-            for category in cat_list:
-                
-                category_total=0
-                category_lablelist.append(category)
-                for item in expense_data[category]:
-                    entery_date=datetime.datetime.strptime(item["date"], "%Y-%m-%d").date()
-                    if start_date<=entery_date<=entery_date:
-                        category_total+=int(item["price"])
-                category_total_list.append(category_total)
+
+            filtered_expenses = {}
+            for category, items in expense_data.items():
+                for item in items:
+                    item_date = datetime.datetime.strptime(item["date"], "%Y-%m-%d").date()
+                    if start_date <= item_date <= end_date:
+                        if category not in filtered_expenses:
+                            filtered_expenses[category] = 0
+                        filtered_expenses[category] += item["price"]
+                        
 
             def make_autopct(values):
                 def my_autopct(pct):
@@ -163,11 +162,13 @@ while True:
                     return 'total:{v:d} ({p:.1f}%)'.format(p=pct,v=val)
                 return my_autopct
             
-            font1 = {'family':'serif','color':'blue','size':20}
-            plt.pie(category_total_list,labels=category_lablelist,autopct=make_autopct(category_total_list),radius=1.2)
-            plt.title("total expense in different categorys",fontdict=font1)
-            plt.legend()
-            plt.show()
+            if filtered_expenses:
+                # Plotting the pie chart
+                plt.figure(figsize=(8, 6))
+                plt.pie(filtered_expenses.values(), labels=filtered_expenses.keys(), autopct=make_autopct(list(filtered_expenses.values())), startangle=140)
+                plt.title(f"Expenses Distribution from {start_date} to {end_date}")
+                plt.show()
+
         except (IndexError, ValueError):
             logging.error("\n### Invalid category selection ###\n")
 
