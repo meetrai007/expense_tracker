@@ -142,14 +142,18 @@ while True:
         cat_list = list(expense_data.keys())
         
         try:
-            
+            start_date = datetime.datetime.strptime(input("Enter the start date (YYYY-MM-DD): "), "%Y-%m-%d").date()
+            end_date = datetime.datetime.strptime(input("Enter the end date (YYYY-MM-DD): "), "%Y-%m-%d").date()
             category_total_list=[]
             category_lablelist=[]
             for category in cat_list:
+                
                 category_total=0
                 category_lablelist.append(category)
                 for item in expense_data[category]:
-                    category_total+=int(item["price"])
+                    entery_date=datetime.datetime.strptime(item["date"], "%Y-%m-%d").date()
+                    if start_date<=entery_date<=entery_date:
+                        category_total+=int(item["price"])
                 category_total_list.append(category_total)
 
             def make_autopct(values):
