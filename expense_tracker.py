@@ -170,12 +170,14 @@ while True:
                 plt.show()
 
         except (IndexError, ValueError):
-            logging.error("\n### Invalid category selection ###\n")
+            logging.error("\n### Invalid category selection or dateinput ###\n")
 
     if feature == 6:
-        start_date = datetime.datetime.strptime(input("Enter the start date (YYYY-MM-DD): "), "%Y-%m-%d").date()
-        end_date = datetime.datetime.strptime(input("Enter the end date (YYYY-MM-DD): "), "%Y-%m-%d").date()
-
+        try:
+            start_date = datetime.datetime.strptime(input("Enter the start date (YYYY-MM-DD): "), "%Y-%m-%d").date()
+            end_date = datetime.datetime.strptime(input("Enter the end date (YYYY-MM-DD): "), "%Y-%m-%d").date()
+        except:
+            print("please enter valid datetime in right formet")
         
         dayly_spent=[]
         dates=[]
