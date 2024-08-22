@@ -15,13 +15,6 @@ try:
 except:
     expense_data = {}
 
-try:
-    with open("daily_spend_record.json", "r") as file2:
-        daily_spend_record = json.load(file2)
-except:
-    daily_spend_record = {}
-
-
 current_date = datetime.date.today()
 
 while True:
@@ -52,18 +45,8 @@ while True:
                     description = str(input("Write a short description of the spend: "))
                     price = float(input("Enter the amount you spent: "))
                 except ValueError:
-                    logging.info("\n### Enter details carefully ###\n")
+                    logging.warning("\n### Enter details carefully ###\n")
                     continue
-                
-                """this code for daily total spend and store in a json file"""
-                if str(current_date) in daily_spend_record:
-                    daily_spend_record[str(current_date)]=daily_spend_record[str(current_date)]+price
-                    with open("daily_spend_record.json", "w") as file2:
-                        json.dump(daily_spend_record, file2)
-                if str(current_date) not in daily_spend_record:
-                    daily_spend_record[str(current_date)]=price
-                    with open("daily_spend_record.json", "w") as file2:
-                        json.dump(daily_spend_record, file2)
 
                 if category not in expense_data:
                     expense_data[category] = []
@@ -89,16 +72,6 @@ while True:
                 expense_data[cat_list[enter_category]].append({"date": str(current_date), "description": description, "price": price})
                 with open("expensedata.json", "w") as file:
                     json.dump(expense_data, file)
-                
-                """this code for daily total spend and store in a json file"""
-                if str(current_date) in daily_spend_record:
-                    daily_spend_record[str(current_date)]=daily_spend_record[str(current_date)]+price
-                    with open("daily_spend_record.json", "w") as file2:
-                        json.dump(daily_spend_record, file2)
-                if str(current_date) not in daily_spend_record:
-                    daily_spend_record[str(current_date)]=price
-                    with open("daily_spend_record.json", "w") as file2:
-                        json.dump(daily_spend_record, file2)
 
             except (IndexError, ValueError):
                 logging.error("\n### Invalid category selection ###\n")
@@ -167,6 +140,7 @@ while True:
                 plt.figure(figsize=(8, 6))
                 plt.pie(filtered_expenses.values(), labels=filtered_expenses.keys(), autopct=make_autopct(list(filtered_expenses.values())), startangle=140)
                 plt.title(f"Expenses Distribution from {start_date} to {end_date}")
+                plt.legend()
                 plt.show()
 
         except (IndexError, ValueError):
@@ -178,15 +152,18 @@ while True:
             end_date = datetime.datetime.strptime(input("Enter the end date (YYYY-MM-DD): "), "%Y-%m-%d").date()
         except:
             print("please enter valid datetime in right formet")
+            continue
         
-        dayly_spent=[]
-        dates=[]
-        for k,v in daily_spend_record.items():
-            todaydate=datetime.datetime.strptime(k, "%Y-%m-%d").date()
-            if start_date<=todaydate<=end_date:
-                dayly_spent.append(v)
-                dates.append(k)
-        plt.bar(dates,dayly_spent,width=.2)
+        dayly_spent={}
+        
+        for categoreys in expense_data.keys():
+            for list in expense_data[categoreys]:
+                todaydate=datetime.datetime.strptime(list["date"], "%Y-%m-%d").date()
+                if start_date<=todaydate<=end_date:
+                    dayly_spent[list["date"]]=0
+                    dayly_spent[list["date"]]+=list["price"]
+                    
+        plt.bar(dayly_spent.keys(),dayly_spent.values(),width=.2)
         plt.title("Total spend record daily")
         plt.xlabel("Dates of total spends")
         plt.ylabel("daily total spend amount")
