@@ -24,6 +24,7 @@ logging.basicConfig(level=logging.DEBUG)
 def add_expense(amount,category,decription):
     
     logging.debug("add expense function start")
+    print(amount,category,decription)
     date=current_date
     if category not in expense_data:
         expense_data[category] = []
@@ -41,12 +42,22 @@ def addexpense_only():
     logging.debug("addexpense_only started")
 
     def submit_expense():
-        selected_categories = [listbox.get(i) for i in listbox.curselection()]
-        amount = int(entry_amount.get())
-        description = entry_decription.get()
-        for category in selected_categories:
-            add_expense(amount, category, description)
-        messagebox.showinfo("Success", "Expense added successfully")
+        try:
+            selected_categories = [listbox.get(i) for i in listbox.curselection()]
+            amount = int(entry_amount.get())
+            description = entry_decription.get()
+
+            for category in selected_categories:
+                add_expense(amount, category, description)
+            messagebox.showinfo("Success", "Expense added successfully in old category")
+        except:
+            amount = int(entry_amount.get())
+            description = entry_decription.get()
+            new_category=entry_new_category.get()
+            add_expense(amount, new_category, description)
+            messagebox.showinfo("Success", "Expense added successfully in new category")
+
+        
         aeo_root.destroy()
 
     aeo_root=Tk()
@@ -58,11 +69,13 @@ def addexpense_only():
     listbox.pack()
     for item in list_data: 
         listbox.insert(END, item)
-
-    lb_amount=Label(aeo_root,text="enter amount").pack()
+    lb_new_category=Label(aeo_root,text="enter new category here").pack()
+    entry_new_category=Entry(aeo_root)
+    entry_new_category.pack()
+    lb_amount=Label(aeo_root,text="enter amount here").pack()
     entry_amount=Entry(aeo_root)
     entry_amount.pack()
-    lb_decription=Label(aeo_root,text="enter short decription").pack()
+    lb_decription=Label(aeo_root,text="enter short decription here").pack()
     entry_decription=Entry(aeo_root)
     entry_decription.pack()
 
