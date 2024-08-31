@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 import logging,datetime,json
 
 
@@ -24,7 +24,6 @@ logging.basicConfig(level=logging.DEBUG)
 def add_expense(amount,category,decription):
     
     logging.debug("add expense function start")
-    print(amount,category,decription)
     date=current_date
     if category not in expense_data:
         expense_data[category] = []
@@ -40,22 +39,27 @@ def add_expense(amount,category,decription):
 """this function for open a different root to add expense in existing category"""
 def addexpense_only():
     logging.debug("addexpense_only started")
-
+    
     def submit_expense():
         try:
-            selected_categories = [listbox.get(i) for i in listbox.curselection()]
-            amount = int(entry_amount.get())
-            description = entry_decription.get()
-
-            for category in selected_categories:
-                add_expense(amount, category, description)
-            messagebox.showinfo("Success", "Expense added successfully in old category")
-        except:
-            amount = int(entry_amount.get())
-            description = entry_decription.get()
+            
+            # selected_categories = [listbox.get(i) for i in listbox.curselection()]
+            old_category=combo.get()
             new_category=entry_new_category.get()
-            add_expense(amount, new_category, description)
-            messagebox.showinfo("Success", "Expense added successfully in new category")
+            amount = int(entry_amount.get())
+            description = entry_decription.get()
+            if old_category=="":
+                add_expense(amount, new_category, description)
+                messagebox.showinfo("Success", "Expense added successfully in new category")
+            else:
+                add_expense(amount, old_category, description)
+                messagebox.showinfo("Success", "Expense added successfully in old category")
+            # for category in selected_categories:
+            
+            # messagebox.showinfo("Success", "Expense added successfully in old category")
+        except:
+            
+            messagebox.showwarning("invalid data", "data not added an error oucer")
 
         
         aeo_root.destroy()
@@ -65,22 +69,31 @@ def addexpense_only():
     aeo_root.config(background="#ddd1d3")
     hadding=Label(aeo_root,text="welcome to expense tracker app",bg="blue",fg="white",font=6,width=30).pack(fill=BOTH,ipadx=20,ipady=20)
 
-    listbox=Listbox(aeo_root,selectmode=MULTIPLE,height=10)
-    listbox.pack()
-    for item in list_data: 
-        listbox.insert(END, item)
-    lb_new_category=Label(aeo_root,text="enter new category here").pack()
+    # listbox=Listbox(aeo_root,selectmode=MULTIPLE,height=10)
+    # listbox.pack()
+
+    #option to select exesting category
+    combo = ttk.Combobox(aeo_root,state="readonly",values=list_data)
+    combo.pack()
+    
+
+    # for item in list_data: 
+    #     listbox.insert(END, item)
+    lb_new_category=Label(aeo_root,text="enter new category here")
+    lb_new_category.pack()
     entry_new_category=Entry(aeo_root)
     entry_new_category.pack()
-    lb_amount=Label(aeo_root,text="enter amount here").pack()
+    lb_amount=Label(aeo_root,text="enter amount here")
+    lb_amount.pack()
     entry_amount=Entry(aeo_root)
     entry_amount.pack()
-    lb_decription=Label(aeo_root,text="enter short decription here").pack()
+    lb_decription=Label(aeo_root,text="enter short decription here")
+    lb_decription.pack()
     entry_decription=Entry(aeo_root)
     entry_decription.pack()
 
     
-    btn2=Button(aeo_root,text="click to add",width=20,height=2,fg="white",bg="#436af2",font="bold",command=submit_expense).place(x=140,y=350)
+    btn2=Button(aeo_root,text="click to add",width=20,height=2,fg="white",bg="#436af2",font="bold",command=submit_expense).place(x=140,y=450)
  
     aeo_root.mainloop()
 
