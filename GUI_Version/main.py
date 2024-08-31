@@ -17,7 +17,7 @@ current_date = str(datetime.date.today())
 
 
 # setting the config level here
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 """function to add expense"""
@@ -52,35 +52,66 @@ def addexpense_only():
             messagebox.showwarning("invalid data", "data not added an error oucer")
 
         
-        aeo_root.destroy()
+        add_exp_root.destroy()
 
-    aeo_root=Tk()
-    aeo_root.geometry("500x600+100+100")
-    aeo_root.config(background="#ddd1d3")
-    hadding=Label(aeo_root,text="welcome to expense tracker app",bg="blue",fg="white",font=6,width=30).pack(fill=BOTH,ipadx=20,ipady=20)
+    add_exp_root=Toplevel()
+    add_exp_root.geometry("500x600+100+100")
+    add_exp_root.config(background="#ddd1d3")
+    hadding=Label(add_exp_root,text="welcome to expense tracker app",bg="blue",fg="white",font=6,width=30).pack(fill=BOTH,ipadx=20,ipady=20)
 
-    lb_new_category=Label(aeo_root,text="choose a category or enter new category here",font="bold",bg="#d9ced0",fg="black")
+    lb_new_category=Label(add_exp_root,text="choose a category or enter new category here",font="bold",bg="#d9ced0",fg="black")
     lb_new_category.pack(pady=20)
-    combo = ttk.Combobox(aeo_root,state="normal",values=list_data,width=20,height=5,font="bold")
+    combo = ttk.Combobox(add_exp_root,state="normal",values=list_data,width=20,height=5,font="bold")
     combo.pack()
-    lb_amount=Label(aeo_root,text="enter amount here",font="bold",bg="#d9ced0",fg="black")
+    lb_amount=Label(add_exp_root,text="enter amount here",font="bold",bg="#d9ced0",fg="black")
     lb_amount.pack(pady=20)
-    entry_amount=Entry(aeo_root,font="bold")
+    entry_amount=Entry(add_exp_root,font="bold")
     entry_amount.pack()
-    lb_decription=Label(aeo_root,text="enter short decription here",font="bold",bg="#d9ced0",fg="black")
+    lb_decription=Label(add_exp_root,text="enter short decription here",font="bold",bg="#d9ced0",fg="black")
     lb_decription.pack(pady=20)
-    entry_decription=Entry(aeo_root,font="bold")
+    entry_decription=Entry(add_exp_root,font="bold")
     entry_decription.pack()
 
     
-    btn2=Button(aeo_root,text="click to add",width=20,height=2,fg="white",bg="#436af2",font="bold",command=submit_expense).place(x=140,y=450)
+    btn2=Button(add_exp_root,text="click to add",width=20,height=2,fg="white",bg="#436af2",font="bold",command=submit_expense).place(x=140,y=450)
  
-    aeo_root.mainloop()
 
     
 """this function for view expenses history"""
 def view_expense_root():
+    
     logging.debug("view expense func started")
+    def monthly_data():
+        textdata=""
+        for item in expense_data[combo.get()]:
+            textdata+=f"date:{item["date"]}\nprise:{item["price"]}\ndecription:{item["description"]}\n\n"
+            logging.debug(item)
+            view_label_history.config(text=textdata)
+    def view_expense():
+        textdata=""
+        for category, items in expense_data.items():
+            logging.debug(f"###{category}###")
+            textdata +=f"##########{category}##########\n"
+            for item in items:
+                for k, v in item.items():
+                    logging.debug(f"{k}: {v}")
+                    textdata+=f"{k}: {v}\n"
+                logging.debug(" \n\n")
+                textdata+="\n\n"
+        view_label_history.config(text=textdata)
+    view_exp_root=Toplevel()
+    view_exp_root.geometry("500x600+100+100")
+    view_exp_root.config(bg="#ddd1d3")
+    view_exp_root.title("view expense history")
+    combo = ttk.Combobox(view_exp_root,state="readonly",values=list_data,width=20,height=5,font="bold")
+    combo.pack()
+    view_btn=Button(view_exp_root,text="view by selected category",command=monthly_data)
+    view_btn.pack()
+    view_btn=Button(view_exp_root,text="view all data",command=view_expense)
+    view_btn.pack()
+    view_label_history=Label(view_exp_root,text="")
+    view_label_history.pack()
+
 
 """this function for view bar graph and pie chart"""
 def expense_chart_root():
