@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox, ttk
 import logging,datetime,json
+import matplotlib.pyplot as plt
 
 
 """this code for read data from file"""
@@ -84,20 +85,20 @@ def view_expense_root():
     def monthly_data():
         textdata=""
         for item in expense_data[combo.get()]:
-            textdata+=f"date:{item["date"]}\nprise:{item["price"]}\ndecription:{item["description"]}\n\n"
+            textdata+=f"date:{item["date"]}  prise:{item["price"]}  decription:{item["description"]}\n"
             logging.debug(item)
             view_label_history.config(text=textdata)
     def view_expense():
         textdata=""
         for category, items in expense_data.items():
             logging.debug(f"###{category}###")
-            textdata +=f"##########{category}##########\n"
+            textdata +=f"\n##########{category}##########\n"
             for item in items:
                 for k, v in item.items():
                     logging.debug(f"{k}: {v}")
-                    textdata+=f"{k}: {v}\n"
+                    textdata+=f"{k}: {v}  "
                 logging.debug(" \n\n")
-                textdata+="\n\n"
+                textdata+="\n"
         view_label_history.config(text=textdata)
     view_exp_root=Toplevel()
     view_exp_root.geometry("500x600+100+100")
@@ -115,10 +116,25 @@ def view_expense_root():
 
 """this function for view bar graph and pie chart"""
 def expense_chart_root():
-    logging.debug("expense chart func started")
+    category_titles=list(expense_data.keys())
+    category_total_list=[]
+    for category in category_titles:
+        sum=0
+        for items in expense_data[category]:
+            sum+=items["price"]
+        category_total_list.append(float(sum))
 
-
-
+    def make_autopct(values):
+                def my_autopct(pct):
+                    total = sum(values)
+                    val = int(round(pct*total/100.0))
+                    return 'total:{v:d} ({p:.1f}%)'.format(p=pct,v=val)
+                return my_autopct
+                    
+    plt.pie(category_total_list,labels=category_titles,autopct='%1.2f%%')
+    plt.show()
+    
+        
 mainwindow=Tk()
 mainwindow.title("expense tracker")
 mainwindow.geometry("500x600+100+100")
