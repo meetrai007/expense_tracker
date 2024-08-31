@@ -42,21 +42,11 @@ def addexpense_only():
     
     def submit_expense():
         try:
-            
-            # selected_categories = [listbox.get(i) for i in listbox.curselection()]
-            old_category=combo.get()
-            new_category=entry_new_category.get()
+            category=combo.get()
             amount = int(entry_amount.get())
             description = entry_decription.get()
-            if old_category=="":
-                add_expense(amount, new_category, description)
-                messagebox.showinfo("Success", "Expense added successfully in new category")
-            else:
-                add_expense(amount, old_category, description)
-                messagebox.showinfo("Success", "Expense added successfully in old category")
-            # for category in selected_categories:
-            
-            # messagebox.showinfo("Success", "Expense added successfully in old category")
+            add_expense(amount, category, description)
+            messagebox.showinfo("Success", "Expense added successfully")
         except:
             
             messagebox.showwarning("invalid data", "data not added an error oucer")
@@ -69,20 +59,10 @@ def addexpense_only():
     aeo_root.config(background="#ddd1d3")
     hadding=Label(aeo_root,text="welcome to expense tracker app",bg="blue",fg="white",font=6,width=30).pack(fill=BOTH,ipadx=20,ipady=20)
 
-    # listbox=Listbox(aeo_root,selectmode=MULTIPLE,height=10)
-    # listbox.pack()
-
-    #option to select exesting category
-    combo = ttk.Combobox(aeo_root,state="readonly",values=list_data)
-    combo.pack()
-    
-
-    # for item in list_data: 
-    #     listbox.insert(END, item)
-    lb_new_category=Label(aeo_root,text="enter new category here")
+    lb_new_category=Label(aeo_root,text="choose a category or enter new category here")
     lb_new_category.pack()
-    entry_new_category=Entry(aeo_root)
-    entry_new_category.pack()
+    combo = ttk.Combobox(aeo_root,state="normal",values=list_data)
+    combo.pack()
     lb_amount=Label(aeo_root,text="enter amount here")
     lb_amount.pack()
     entry_amount=Entry(aeo_root)
