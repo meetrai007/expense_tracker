@@ -83,41 +83,88 @@ def addexpense_only():
     btn2=Button(add_exp_root,text="click to add",width=20,height=2,fg="white",bg="#436af2",font="bold",command=submit_expense).place(x=140,y=450)
  
 
-    
-"""this function for view expenses history"""
+list_data = list(expense_data.keys())  # List of categories for the combobox
+
 def view_expense_root():
-    
     logging.debug("view expense func started")
-    def monthly_data():
-        textdata=""
+
+    def single_category_data():
+        textdata = ""
         for item in expense_data[combo.get()]:
-            textdata+=f"date:{item["date"]}  prise:{item["price"]}  decription:{item["description"]}\n"
+            textdata += f"date: {item['date']}  price: {item['price']}  description: {item['description']}\n"
             logging.debug(item)
-            view_label_history.config(text=textdata)
+        view_label_history.config(text=textdata)
+    
     def view_expense():
-        textdata=""
+        textdata = ""
         for category, items in expense_data.items():
             logging.debug(f"###{category}###")
-            textdata +=f"\n##########{category}##########\n"
+            textdata += f"\n##########{category}##########\n"
             for item in items:
                 for k, v in item.items():
                     logging.debug(f"{k}: {v}")
-                    textdata+=f"{k}: {v}  "
+                    textdata += f"{k}: {v}  "
                 logging.debug(" \n\n")
-                textdata+="\n"
+                textdata += "\n"
         view_label_history.config(text=textdata)
-    view_exp_root=Toplevel()
-    view_exp_root.geometry("500x600+100+100")
+
+    def view_expense_by_date():
+        start_date_str = start_date.get()
+        end_date_str = end_date.get()
+        try:
+            start_date_obj = datetime.datetime.strptime(start_date_str, '%Y-%m-%d')
+            end_date_obj = datetime.datetime.strptime(end_date_str, '%Y-%m-%d')
+        except ValueError:
+            view_label_history.config(text="Invalid date format. Please use YYYY-MM-DD.")
+            return
+        
+        textdata = ""
+        for category, items in expense_data.items():
+            textdata += f"\n##########{category}##########\n"
+            for item in items:
+                item_date_obj = datetime.datetime.strptime(item['date'], '%Y-%m-%d')
+                if start_date_obj <= item_date_obj <= end_date_obj:
+                    textdata += f"date: {item['date']}  price: {item['price']}  description: {item['description']}\n"
+        view_label_history.config(text=textdata)
+
+    view_exp_root = Toplevel()
+    view_exp_root.geometry("600x700+100+100")
     view_exp_root.config(bg="#ddd1d3")
-    view_exp_root.title("view expense history")
-    combo = ttk.Combobox(view_exp_root,state="readonly",values=list_data,width=20,height=5,font="bold")
-    combo.pack()
-    view_btn=Button(view_exp_root,text="view by selected category",command=monthly_data)
-    view_btn.pack()
-    view_btn=Button(view_exp_root,text="view all data",command=view_expense)
-    view_btn.pack()
-    view_label_history=Label(view_exp_root,text="")
+    view_exp_root.title("View Expense History")
+
+    combo = ttk.Combobox(view_exp_root, state="readonly", values=list_data, width=20, height=5, font="bold")
+    combo.pack(pady=40)
+
+    view_btn_category = Button(view_exp_root, text="View by Selected Category", command=single_category_data)
+    view_btn_category.pack()
+
+    or_=Label(view_exp_root, text="or",bg="#ddd1d3")
+    or_.pack(pady=40)
+
+    view_btn_all = Button(view_exp_root, text="View All Data", command=view_expense)
+    view_btn_all.pack()
+
+    or_=Label(view_exp_root, text="or",bg="#ddd1d3")
+    or_.pack(pady=20)
+
+
+    start_date = StringVar()
+    end_date = StringVar()
+    
+    Label(view_exp_root, text="Start Date (YYYY-MM-DD):").pack()
+    start_date_entry = ttk.Entry(view_exp_root, textvariable=start_date)
+    start_date_entry.pack()
+
+    Label(view_exp_root, text="End Date (YYYY-MM-DD):").pack()
+    end_date_entry = ttk.Entry(view_exp_root, textvariable=end_date)
+    end_date_entry.pack()
+
+    view_btn_date = Button(view_exp_root, text="View by Date Range", command=view_expense_by_date)
+    view_btn_date.pack()
+
+    view_label_history = Label(view_exp_root, text="",bg="#ddd1d3")
     view_label_history.pack()
+
 
 
 """this function for view bar graph and pie chart"""
@@ -183,13 +230,13 @@ def expense_chart_root():
     chart_root.config(background="#ddd1d3")
     hadding=Label(chart_root,text="welcome to expense tracker app",bg="blue",fg="white",font=6,width=30).pack(fill=BOTH,ipadx=20,ipady=20)
     btn1=Button(chart_root,text="category wise chart",width=20,height=2,fg="white",bg="#436af2",font="bold",command=category_pie).place(x=150,y=150)
-    btn2=Button(chart_root,text="enter date here",width=20,height=2,fg="white",bg="#436af2",font="bold",command=example).place(x=150,y=250)
+    btn2=Button(chart_root,text="enter date here",width=20,height=2,command=example).place(x=190,y=270)
     sdate=Label(chart_root,text="start date")
-    sdate.place(x=150,y=320)
+    sdate.place(x=190,y=320)
     edate=Label(chart_root,text="end date")
-    edate.place(x=250,y=320)
+    edate.place(x=290,y=320)
 
-    btn3=Button(chart_root,text="search by date",width=20,height=2,fg="white",bg="#436af2",font="bold",command=lambda:date_wise_bar()).place(x=150,y=350)
+    btn3=Button(chart_root,text="view daily expense",width=20,height=2,fg="white",bg="#436af2",font="bold",command=lambda:date_wise_bar()).place(x=150,y=350)
 
 
       
