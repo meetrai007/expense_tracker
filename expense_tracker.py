@@ -33,50 +33,79 @@ while True:
         continue
 
     if feature == 1:
-        choice = int(input("""##### Choose an option #####
-                                1. Add expense in new category
-                                2. Add expense in existing category
-                                Enter your choice (1 or 2): """))
-        if choice == 1:
-            continuty = "y"
-            while continuty.lower() != "n":
-                try:
-                    category = str(input("Enter category in which you spent: "))
-                    description = str(input("Write a short description of the spend: "))
-                    price = float(input("Enter the amount you spent: "))
-                except ValueError:
-                    logging.warning("\n### Enter details carefully ###\n")
-                    continue
-
-                if category not in expense_data:
-                    expense_data[category] = []
-                expense_data[category].append({"date": str(current_date), "description": description, "price": price})
-                
-                with open("expensedata.json", "w") as file:
-                    json.dump(expense_data, file)
-
-                
-                continuty = str(input("Enter 'y' to add more expenses or 'n' to exit (y/n): "))
-
-        if choice == 2:
-            logging.info("\n##### Choose a category #####")
-            cat_list = list(expense_data.keys())
-            for idx, key in enumerate(cat_list, 1):
-                logging.info(f"\t{idx}. {key}")
-
+        while True:
             try:
-                enter_category = int(input("Choose a category in which you want to add expense: ")) - 1
+                choice = int(input("""##### Choose an option #####
+                                        1. Add expense in new category
+                                        2. Add expense in existing category
+                                        3. back
+                                        Enter your choice (1 or 2): """))
+            except ValueError:
+                logging.info("\n### Choose a valid option: 1, 2, 3 ###\n")
+                continue
+            if choice == 1:
+                continuty = "y"
+                while continuty.lower() != "n":
+                    while True:
+                        try:
+                            category = str(input("Enter category in which you spent: "))
+                            break
+                        except ValueError:
+                            logging.info("expense not added")
+                            logging.warning("\n### Enter details carefully and in wright format ###\n")
+                    description = str(input("Write a short description of the spend: "))
+                    while True:
+                        try:
+                            price = float(input("Enter the amount you spent: "))
+                            break
+                        except ValueError:
+                            logging.info("expense not added")
+                            logging.warning("\n### Enter details carefully and in wright format ###\n")
+
+                        
+
+                    if category not in expense_data:
+                        expense_data[category] = []
+                    expense_data[category].append({"date": str(current_date), "description": description, "price": price})
+                    
+                    with open("expensedata.json", "w") as file:
+                        json.dump(expense_data, file)
+                    logging.info("expense added")
+
+                    
+                    continuty = str(input("Enter 'y' to add more expenses or 'n' to exit (y/n): "))
+
+            elif choice == 2:
+                logging.info("\n##### Choose a category #####")
+                cat_list = list(expense_data.keys())
+                for idx, key in enumerate(cat_list, 1):
+                    logging.info(f"\t{idx}. {key}")
+                while True:
+                    try:
+                        enter_category = int(input("Choose a category in which you want to add expense: ")) - 1
+                        break
+                    except (IndexError, ValueError):
+                        logging.error("\n### Invalid category selection ###\n")
+
                 description = str(input("Write a short description of the spend: "))
-                price = float(input("Enter the amount you spent: "))
-                
+                while True:
+                    try:
+                        price = float(input("Enter the amount you spent: "))
+                        break
+                    except (IndexError, ValueError):
+                        logging.error("\n### Invalid prise input ###\n")
+                    
                 expense_data[cat_list[enter_category]].append({"date": str(current_date), "description": description, "price": price})
                 with open("expensedata.json", "w") as file:
                     json.dump(expense_data, file)
+                logging.info("expense adeed")
 
-            except (IndexError, ValueError):
-                logging.error("\n### Invalid category selection ###\n")
+            elif choice==3:
+                break
+            else:
+                print("invalid choice,please enter 1 or 2 only")
 
-    if feature == 2:
+    elif feature == 2:
         logging.info("\n##### Choose a category #####")
         cat_list = list(expense_data.keys())
         for idx, key in enumerate(cat_list, 1):
@@ -93,7 +122,7 @@ while True:
             logging.error("\n### Invalid category selection ###\n")
         
 
-    if feature == 3:
+    elif feature == 3:
         total_exp=[]
         for categ,valeu in expense_data.items():
             for i in range (len(valeu)):
@@ -101,7 +130,7 @@ while True:
         
         logging.info(f"\nTotal spent in all categories is {sum(total_exp)}")
 
-    if feature == 4:
+    elif feature == 4:
         logging.info("\n##### Expense History #####")
         for category, items in expense_data.items():
             logging.info(f"{category}")
@@ -110,7 +139,7 @@ while True:
                     logging.info(f"\t{k}: {v}")
                 logging.info(" ")
 
-    if feature == 5:
+    elif feature == 5:
         logging.info("\n##### Choose a category #####")
         
         
@@ -146,7 +175,7 @@ while True:
         except (IndexError, ValueError):
             logging.error("\n### Invalid category selection or dateinput ###\n")
 
-    if feature == 6:
+    elif feature == 6:
         try:
             start_date = datetime.datetime.strptime(input("Enter the start date (YYYY-MM-DD): "), "%Y-%m-%d").date()
             end_date = datetime.datetime.strptime(input("Enter the end date (YYYY-MM-DD): "), "%Y-%m-%d").date()
@@ -171,7 +200,9 @@ while True:
       
 
 
-    if feature == 7:
+    elif feature == 7:
         logging.info("Exiting the application.")
         break
     
+    else:
+        print("invalid choice, please enter choice between 1 to 7 only")
