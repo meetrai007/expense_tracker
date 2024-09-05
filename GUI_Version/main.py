@@ -128,41 +128,49 @@ def view_expense_root():
         view_label_history.config(text=textdata)
 
     view_exp_root = Toplevel()
-    view_exp_root.geometry("600x700+100+100")
+    view_exp_root.geometry("500x600+100+100")
     view_exp_root.config(bg="#ddd1d3")
     view_exp_root.title("View Expense History")
 
+    Label(view_exp_root, text="Select a category and view expense",font="bold",bg="#d9ced0",fg="black").pack(pady=20)
+
     combo = ttk.Combobox(view_exp_root, state="readonly", values=list_data, width=20, height=5, font="bold")
-    combo.pack(pady=40)
+    combo.pack()
 
-    view_btn_category = Button(view_exp_root, text="View by Selected Category", command=single_category_data)
-    view_btn_category.pack()
+    view_btn_category = Button(view_exp_root, text="View expense",width=20,height=1,fg="white",bg="#436af2",font="bold", command=single_category_data)
+    view_btn_category.pack(pady=5)
 
-    or_=Label(view_exp_root, text="or",bg="#ddd1d3")
-    or_.pack(pady=40)
+    or_=Label(view_exp_root, text="OR",bg="#ddd1d3")
+    or_.pack(pady=15)
 
-    view_btn_all = Button(view_exp_root, text="View All Data", command=view_expense)
+    Label(view_exp_root, text="click View All Data to view all time data",font="bold",bg="#d9ced0",fg="black").pack(pady=20)
+    view_btn_all = Button(view_exp_root, text="View All Data",width=20,height=1,fg="white",bg="#436af2",font="bold", command=view_expense)
     view_btn_all.pack()
 
-    or_=Label(view_exp_root, text="or",bg="#ddd1d3")
-    or_.pack(pady=20)
+    or_=Label(view_exp_root, text="OR",bg="#ddd1d3")
+    or_.pack(pady=15)
 
 
     start_date = StringVar()
     end_date = StringVar()
     
-    Label(view_exp_root, text="Start Date (YYYY-MM-DD):").pack()
+    
+    Label(view_exp_root, text="Enter a time period to to search",font="bold",bg="#d9ced0",fg="black").pack(pady=20)
+    Label(view_exp_root, text="Start Date (YYYY-MM-DD):",bg="#d9ced0",fg="black").pack()
     start_date_entry = ttk.Entry(view_exp_root, textvariable=start_date)
     start_date_entry.pack()
 
-    Label(view_exp_root, text="End Date (YYYY-MM-DD):").pack()
+    Label(view_exp_root, text="End Date (YYYY-MM-DD):",bg="#d9ced0",fg="black").pack()
     end_date_entry = ttk.Entry(view_exp_root, textvariable=end_date)
     end_date_entry.pack()
 
-    view_btn_date = Button(view_exp_root, text="View by Date Range", command=view_expense_by_date)
-    view_btn_date.pack()
+    view_btn_date = Button(view_exp_root, text="View by Date Range",width=20,height=1,fg="white",bg="#436af2",font="bold", command=view_expense_by_date)
+    view_btn_date.pack(pady=5)
 
-    view_label_history = Label(view_exp_root, text="",bg="#ddd1d3")
+    expense_view=Toplevel()
+    expense_view.geometry("+650+100")
+    expense_view.config(bg="#ddd1d3")
+    view_label_history = Label(expense_view, text="",bg="#ddd1d3")
     view_label_history.pack()
 
 
