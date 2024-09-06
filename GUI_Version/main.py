@@ -91,7 +91,7 @@ def view_expense_root():
     def single_category_data():
         textdata = ""
         for item in expense_data[combo.get()]:
-            textdata += f"date: {item['date']}  price: {item['price']}  description: {item['description']}\n"
+            textdata += f"date: {item['date']}  \nprice: {item['price']}  \ndescription: {item['description']}\n\n"
             logging.debug(item)
         view_label_history.config(text=textdata)
     
@@ -103,7 +103,7 @@ def view_expense_root():
             for item in items:
                 for k, v in item.items():
                     logging.debug(f"{k}: {v}")
-                    textdata += f"{k}: {v}  "
+                    textdata += f"{k}: {v}\n"
                 logging.debug(" \n\n")
                 textdata += "\n"
         view_label_history.config(text=textdata)
@@ -124,27 +124,29 @@ def view_expense_root():
             for item in items:
                 item_date_obj = datetime.datetime.strptime(item['date'], '%Y-%m-%d')
                 if start_date_obj <= item_date_obj <= end_date_obj:
-                    textdata += f"date: {item['date']}  price: {item['price']}  description: {item['description']}\n"
-        view_label_history.config(textvariable=textdata)
+                    textdata += f"date: {item['date']} \nprice: {item['price']}  \ndescription: {item['description']}\n\n"
+        view_label_history.config(text=textdata)
+
+
 
     view_exp_root = Toplevel()
     view_exp_root.geometry("500x600+100+100")
     view_exp_root.config(bg="#ddd1d3")
     view_exp_root.title("View Expense History")
 
-    Label(view_exp_root, text="Select a category and view expense",font="bold",bg="#d9ced0",fg="black").grid(column=1,row=1,pady=20)
+    Label(view_exp_root, text="Select a category and view expense",bg="#d9ced0",fg="black").grid(column=1,row=0,pady=20)
 
-    combo = ttk.Combobox(view_exp_root, state="readonly", values=list_data, width=20, height=5, font="bold")
-    combo.grid(row=2,column=1)
+    combo = ttk.Combobox(view_exp_root, state="readonly", values=list_data, width=15, height=5, font="bold")
+    combo.grid(row=1,column=1)
 
-    view_btn_category = Button(view_exp_root, text="View expense",width=20,height=1,fg="white",bg="#436af2",font="bold", command=single_category_data)
-    view_btn_category.grid(row=3,column=1,pady=5)
+    view_btn_category = Button(view_exp_root, text="View expense",width=15,height=1,fg="white",bg="#436af2",font="bold", command=single_category_data)
+    view_btn_category.grid(row=2,column=1,pady=5)
 
     or_=Label(view_exp_root, text="OR",bg="#ddd1d3")
-    or_.grid(row=4,column=1,pady=15)
+    or_.grid(row=3,column=1,pady=15)
 
-    Label(view_exp_root, text="click View All Data to view all time data",font="bold",bg="#d9ced0",fg="black").grid(row=1,column=1,pady=20)
-    view_btn_all = Button(view_exp_root, text="View All Data",width=20,height=1,fg="white",bg="#436af2",font="bold", command=view_expense)
+    Label(view_exp_root, text="view all time data",bg="#d9ced0",fg="black").grid(row=4,column=1,pady=20)
+    view_btn_all = Button(view_exp_root, text="View All Data",width=15,height=1,fg="white",bg="#436af2",font="bold", command=view_expense)
     view_btn_all.grid(row=5,column=1)
 
     or_=Label(view_exp_root, text="OR",bg="#ddd1d3")
@@ -155,20 +157,20 @@ def view_expense_root():
     end_date = StringVar()
     
     
-    Label(view_exp_root, text="Enter a time period to to search",font="bold",bg="#d9ced0",fg="black").grid(row=1,column=1,pady=20)
-    Label(view_exp_root, text="Start Date (YYYY-MM-DD):",bg="#d9ced0",fg="black").grid(row=7,column=1)
+    Label(view_exp_root, text="Enter a time period to to search",bg="#d9ced0",fg="black").grid(row=7,column=1,pady=20)
+    Label(view_exp_root, text="Start Date (YYYY-MM-DD):",bg="#d9ced0",fg="black").grid(row=8,column=1)
     start_date_entry = ttk.Entry(view_exp_root, textvariable=start_date)
-    start_date_entry.grid(row=8,column=1)
+    start_date_entry.grid(row=9,column=1)
 
     Label(view_exp_root, text="End Date (YYYY-MM-DD):",bg="#d9ced0",fg="black").grid(row=9,column=1)
     end_date_entry = ttk.Entry(view_exp_root, textvariable=end_date)
-    end_date_entry.grid(row=10,column=1)
+    end_date_entry.grid(row=11,column=1)
 
-    view_btn_date = Button(view_exp_root, text="View by Date Range",width=20,height=1,fg="white",bg="#436af2",font="bold", command=view_expense_by_date)
-    view_btn_date.grid(row=11,column=1,pady=5)
+    view_btn_date = Button(view_exp_root, text="View by Date Range",width=15,height=1,fg="white",bg="#436af2",font="bold", command=view_expense_by_date)
+    view_btn_date.grid(row=12,column=1,pady=5)
 
-    view_label_history = Entry(view_exp_root, state='readonly',bg="#ddd1d3")
-    view_label_history.grid(column=2)
+    view_label_history = Label(view_exp_root, text="",bg="#ddd1d3")
+    view_label_history.grid(row=1,rowspan=11,column=2)
 
     # expense_view=Toplevel()
     # expense_view.geometry("+650+100")
